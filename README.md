@@ -2,35 +2,38 @@
 
 Planning - Weekly meetings together in library group rooms
 
+I WILL TRY TO THINK OF ANY OTHER FUNCTIONS WE NEED
+If you guys think of any neccessary ones, feel free to add them
+
 ### Main
-- Menu logic (main switch case)
-- LoadTasksFromFile()
-- SaveTasksToFile()
-- PrintTasksPastDue()
-- AskToRemovePastDueTasks()
-- PrintUrgent()
+- Menu logic (main switch case) - Spencer
+- LoadTasksFromFile() - Spencer
+- SaveTasksToFile() - Spencer
+- PrintTasksPastDue() - Spencer
+- AskToRemovePastDueTasks() - Spencer
+- PrintUrgent() - Spencer
 
 ### Task Component
-- CreateTask()
-- PrintTask()
-- GetTaskName()
-- GetTaskCourseCode()
-- GetTaskWeight()
-- GetTaskDueDate()
-- SetTaskName()
-- SetTaskCourseCode()
-- SetTaskWeight()
-- SetTaskDueDate()
+- CreateTask() - Tanveer
+- PrintTask() - Tanveer
+- GetTaskName() - Tanveer
+- GetTaskCourseCode() - Tanveer
+- GetTaskWeight() - Tanveer
+- GetTaskDueDate() - Tanveer
+- SetTaskName() - Tanveer
+- SetTaskCourseCode() - Tanveer
+- SetTaskWeight() - Tanveer
+- SetTaskDueDate() - Tanveer
 
 
 ### Date Component
-- GetCurrentDate() //This will require a library so we can access the system time
+- GetCurrentDate() //This will require a library so we can access the system time - Spencer
 
 ### TaskList Component
-- AddTaskToList()
-- RemoveTaskFromList()
-- PrintOneTask()
-- PrintNTasks()
-- PrintAllTasks
-- PrintAllTasksWithCourseCode()
-- SearchForTask()
+- AddTaskToList() - Devki
+- RemoveTaskFromList() - Devki
+- PrintOneTask() - Devki
+- PrintNTasks() - Devki
+- PrintAllTasks - Devki
+- PrintAllTasksWithCourseCode() - Devki
+- SearchForTask() - Devki
