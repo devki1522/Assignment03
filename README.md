@@ -32,8 +32,8 @@ If you guys think of any neccessary ones, feel free to add them
 ### TaskList Component
 - AddTaskToList() - Devki
 - RemoveTaskFromList() - Devki
-- PrintOneTask() - Devki
-- PrintNTasks() - Devki
-- PrintAllTasks - Devki
+- PrintOneTask() - Devki  print most recent due task?
+- PrintNTasks() - Devki   we will sort this by date 
+- PrintAllTasks - Devki  we will sort this by date 
 - PrintAllTasksWithCourseCode() - Devki
 - SearchForTask() - Devki
