@@ -43,3 +43,9 @@ void SetTaskWeight(TASK Task, int Weight);
 void SetTaskDueDate(TASK Task, DATE DueDate);
 
 // Delete
+
+TASK AddTaskToList(TASK task);
+
+void RemoveTaskFromList(TASK task);
+
+void PrintOneTask(TASK task, int TaskNumber);

@@ -9,3 +9,7 @@ typedef struct date {
 	int year;
 } DATE;
 
+
+DATE CreateDate();
+DATE GetCurrentDate();
+void CompareDate();
