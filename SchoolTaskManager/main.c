@@ -3,6 +3,21 @@
 
 #include "task.h"
 
+/// Prints start up message (welcome, urgent tasks, outdated task notif.)
+void printMOTD();
+
+/// Prints user menu
+void printMenu();
+
 int main(void) {
+
+}
+
+
+void printMOTD() {
+
+}
+
+void printMenu() {
 
 }

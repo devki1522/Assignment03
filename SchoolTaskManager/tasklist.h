@@ -1,23 +1,47 @@
+// Group 2 - PROG71990 W25 - Group Project - School Task Manager
+// Interface of the List struct and functions
+
 #pragma once
 
+#include "task.h"
 
 typedef struct listnode {
 	TASK task;
 	struct listnode* next;
-} LISTNODE, * PLISTNODE;
+} LISTNODE, *PLISTNODE;
 
-LISTNODE* AddListNode(TASK task);
+// Create
 
-void RemoveListNode(LISTNODE* node);
+/// Adds a new node into the list **IN CORRECT ORDER (head = soonest, tail = latest)**
+LISTNODE* AddListNode(TASK Task);
 
-void DeleteList(LISTNODE* listnode);
+// Delete
 
-void PrintAllList(LISTNODE* head);
+/// Free node and remove from list
+void RemoveListNode(LISTNODE* Node);
 
-void PrintByCourseCode(LISTNODE* head);
+/// Runs RemoveListNode on all nodes
+void DeleteList(LISTNODE* Head);
 
-void PrintUpcomingTask(LISTNODE* head);
+// Read
 
-TASK SEarchLinkedList(); // make a find recursive function for searching 
+/// Prints task from each node
+void PrintAllList(LISTNODE* Head);
+
+/// Prints task from each node that has a certain course code
+void PrintByCourseCode(LISTNODE* Head, char* CourseCode);
+
+/// Prints next upcoming 'Num' tasks
+void PrintUpcomingTask(LISTNODE* Head, int Num);
+
+/// 1. Ask for CC from user
+/// 2. PrintByCourseCode all tasks that belong to the input CC
+/// 3. Ask for TaskName from user
+/// 4. Call FindListNode with info
+/// 5. If FindListNode returns null, print "cant find"
+LISTNODE* SearchLinkedList(); 
+
+/// Recursive search through LL until finds task with matching CC and TaskName
+LISTNODE* FindListNode(LISTNODE* Current, char* CourseCode, char* TaskName); // make a find recursive function for searching 
 
 

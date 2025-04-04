@@ -1,20 +1,45 @@
 // Group 2 - PROG71990 W25 - Group Project - School Task Manager
 // Implementation of the Task struct and functions
+
 #include "task.h"
+#include "date.h"
 
-TASK AddTaskToList() {
-	TASK task;
-	GetTaskCourseCode;
-	GetTaskDueDate;
-	GetTaskName;
-	GetTaskWeight;
-	return task;
+TASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate) {
+
 }
 
-void RemoveTaskFromList(TASK task) {
-	free(task);
+void PrintTask(TASK Task) {
+
 }
 
-void PrintOneTask(TASK task, int TaskNumber) {
+char* GetTaskName(TASK Task) {
+
+}
+
+char* GetTaskCourseCode(TASK Task) {
+
+}
+
+int GetTaskWeight(TASK Task) {
+
+}
+
+DATE GetTaskDueDate(TASK Task) {
+
+}
+
+void SetTaskName(PTASK Task, char* Name) {
+
+}
+
+void SetTaskCourseCode(PTASK Task, char* CourseCode) {
+
+}
+
+void SetTaskWeight(PTASK Task, int Weight) {
+
+}
+
+void SetTaskDueDate(PTASK Task, DATE DueDate) {
 
 }

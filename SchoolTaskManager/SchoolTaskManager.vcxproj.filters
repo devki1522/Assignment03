@@ -27,7 +27,7 @@
     <ClCompile Include="Tasklist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Datafile.c">
+    <ClCompile Include="fileIO.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +38,10 @@
     <ClInclude Include="date.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DataFile.h">
+    <ClInclude Include="TaskList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TaskList.h">
+    <ClInclude Include="fileIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,9 +5,8 @@
 
 #include "date.h"
 
-#define MAX_NAME_LEN 20
-#define MAX_DESC_LEN 200
-#define COURSE_CODE_LEN 10 // Course code is 9 chars, plus \0
+#define MAX_NAME_LEN 20 
+#define COURSE_CODE_LEN 10 // Conestoga course codes are 9 chars, plus \0
 
 typedef struct Task {
 	char name[MAX_NAME_LEN];
@@ -20,9 +19,11 @@ typedef struct Task {
 
 TASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate);
 
-// Read / Getters
+// Read
 
 void PrintTask(TASK Task);
+
+// Getters
 
 char* GetTaskName(TASK Task);
 
@@ -32,20 +33,15 @@ int GetTaskWeight(TASK Task);
 
 DATE GetTaskDueDate(TASK Task);
 
-// Update / Setters
+// Setters
 
-void SetTaskName(TASK Task, char* Name);
+void SetTaskName(PTASK Task, char* Name);
 
-void SetTaskCourseCode(TASK Task, char* CourseCode);
+void SetTaskCourseCode(PTASK Task, char* CourseCode);
 
-void SetTaskWeight(TASK Task, int Weight);
+void SetTaskWeight(PTASK Task, int Weight);
 
-void SetTaskDueDate(TASK Task, DATE DueDate);
+void SetTaskDueDate(PTASK Task, DATE DueDate);
 
-// Delete
+// Delete - not needed
 
-TASK AddTaskToList(TASK task);
-
-void RemoveTaskFromList(TASK task);
-
-void PrintOneTask(TASK task, int TaskNumber);

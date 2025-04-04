@@ -1,39 +1,39 @@
 # School Task Manager - Division Of Labour
 
-Planning - Weekly meetings together in library group rooms
+Planning - All ideas, code flow, and interface planning done together
 
-I WILL TRY TO THINK OF ANY OTHER FUNCTIONS WE NEED
-If you guys think of any neccessary ones, feel free to add them
+### Main - Spencer
+- printMOTD()
+- printMenu()
+- main()
 
-### Main
-- Menu logic (main switch case) - Spencer
-- LoadTasksFromFile() - Spencer
-- SaveTasksToFile() - Spencer
-- PrintTasksPastDue() - Spencer
-- AskToRemovePastDueTasks() - Spencer
-- PrintUrgent() - Spencer
+### TaskList Component - Devki
+- AddListNode()
+- RemoveListNode()
+- DeleteList()
+- PrintAllList()
+- PrintByCourseCode()
+- PrintUpcomingTask()
+- SearchLinkedList()
+- FindListNode()
 
-### Task Component
-- CreateTask() - Tanveer
-- PrintTask() - Tanveer
-- GetTaskName() - Tanveer
-- GetTaskCourseCode() - Tanveer
-- GetTaskWeight() - Tanveer
-- GetTaskDueDate() - Tanveer
-- SetTaskName() - Tanveer
-- SetTaskCourseCode() - Tanveer
-- SetTaskWeight() - Tanveer
-- SetTaskDueDate() - Tanveer
+### Task Component - Tanveer
+- CreateTask()
+- PrintTask()
+- GetTaskName()
+- GetTaskCourseCode()
+- GetTaskWeight()
+- GetTaskDueDate()
+- SetTaskName()
+- SetTaskCourseCode()
+- SetTaskWeight()
+- SetTaskDueDate()
 
+### Date Component - Spencer
+- CreateDate()
+- GetCurrentDate()
+- IsDate1SoonerThanDate2()
 
-### Date Component
-- GetCurrentDate() //This will require a library so we can access the system time - Spencer
-
-### TaskList Component
-- AddTaskToList() - Devki
-- RemoveTaskFromList() - Devki
-- PrintOneTask() - Devki  print most recent due task?
-- PrintNTasks() - Devki   we will sort this by date 
-- PrintAllTasks - Devki  we will sort this by date 
-- PrintAllTasksWithCourseCode() - Devki
-- SearchForTask() - Devki
+### FileIO Component - Devki
+- LoadTasksfromDatabase()
+- SaveTaskstoDatabase()
