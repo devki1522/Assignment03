@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-void AddListNode(LISTNODE* list, TASK Task) {
+void AddListNode(LISTNODE** list, TASK Task) {
 	// allocate memory for a new list node
 	LISTNODE* NewNode = (LISTNODE*)malloc(sizeof(LISTNODE));
 	if (NewNode == NULL) {
@@ -16,70 +16,82 @@ void AddListNode(LISTNODE* list, TASK Task) {
 	// copy stuff 
 	NewNode->task = Task;
 	NewNode->next = NULL;
-	if (list == NULL) {
-		list = NewNode;
+	if (*list == NULL) {
+		*list = NewNode;
 		return;
 	}
 	//sort the list to save the new node
-	LISTNODE* Current = list;
+	LISTNODE* Current = *list;
 	LISTNODE* Previous = NULL;
 	while (Current != NULL && CompareDates(Current->task.dueDate, Task.dueDate) < 0) {
 		Previous = Current;
 		Current = Current->next;
 	}
 	if (Previous == NULL) {
-		NewNode->next = list;
-		list = NewNode;
+		NewNode->next = *list;
+		*list = NewNode;
 	}
 	else {
 		NewNode->next = Current;
 		Previous->next = NewNode;
 	}
 }
-void RemoveListNode(LISTNODE* Node) {
+void RemoveListNode(LISTNODE** Node, LISTNODE* NodeToDelete) {
 	// check if the task exists and delete it
-    if (scanf("%s",Node->task.courseCode) != 1) {
-        fprintf(stderr, "Error reading Course Code\n");
-        return NULL;
-    }
-    if (scanf("%s", Node->task.name) != 1) {
-        fprintf(stderr, "Error reading Task Name\n");
-        return NULL;
-    }
-	if (Node == NULL) {
-		fprintf(stderr, "Node is NULL\n");
+	if (*Node == NULL || NodeToDelete == NULL) {
+		fprintf(stderr, "List is Empty. ");
 		return;
 	}
-	free(Node);
-	Node = NULL;
+	if (*Node == NodeToDelete) {		
+		*Node = (*Node)->next;
+		free(NodeToDelete);
+		return;
+	}
+	LISTNODE* Current = *Node;
+	while (Current != NULL && Current->next != NodeToDelete)
+	{
+		Current = Current->next;
+	}
+	if (Current != NULL) {
+		Current->next = NodeToDelete->next;
+		free(NodeToDelete);
+	}
+	else 
+		fprintf(stderr, "Node not found in the list.\n");
 }
 
-void DeleteList(LISTNODE* Head) {
+
+void DeleteList(LISTNODE** Node) {
 	// delete all nodes in the list one by one 
-	LISTNODE* Current = Head;
+	LISTNODE* Current = *Node;
 	LISTNODE* NextNode;
 	while (Current != NULL) {
 		NextNode = Current->next;
-		RemoveListNode(Current);
+		free(Current);
 		Current = NextNode;
 	}
+	*Node = NULL;
 
 }
 
-void PrintAllList(LISTNODE* Head) {
-	LISTNODE* Current = Head;
+void PrintAllList(LISTNODE* Node) {
+	LISTNODE* Current = Node;
+	
 	while (Current != NULL) {
-		PrintTask(Current->task);
+		TASK Task = Current->task;
+		PrintTask(&Task);
 		Current = Current->next;
 	}
 	printf("\n");
 }
 
-void PrintByCourseCode(LISTNODE* Head, char* CourseCode) {
-	LISTNODE* Current = Head;
+void PrintByCourseCode(LISTNODE* Node, char* CourseCode) {
+	LISTNODE* Current = Node;
+	
 	while (Current != NULL) {
+		TASK Task = Current->task;
 		if (strcmp(Current->task.courseCode, CourseCode) == 0) {
-			PrintTask(Current->task);
+			PrintTask(&Task);
 		}
 		Current = Current->next;
 	}
@@ -87,23 +99,26 @@ void PrintByCourseCode(LISTNODE* Head, char* CourseCode) {
 
 }
 
-void PrintUpcomingTask(LISTNODE* Head, int Num) {
-	LISTNODE* Current = Head;
+void PrintUpcomingTask(LISTNODE* Node, int Num) {
+	LISTNODE* Current = Node;
+	
 	int count = 0;
 	while (Current != NULL && count < Num) {
-		PrintTask(Current->task);
+		TASK Task = Current->task;
+		PrintTask(&Task);
 		Current = Current->next;
 		count++;
 	}
 	printf("\n");
 }
 
-LISTNODE* SearchLinkedList() {
+LISTNODE* SearchLinkedList(LISTNODE* Node) {
 	LISTNODE* list = {0};
-	char CourseCode[COURSE_CODE_LEN];
-	GetTaskCourseCode(&list->task, CourseCode);
+	printf("Enter the course code: ");
+	char CourseCode[COURSE_CODE_LEN] = GetTaskCourseCodeFromUser;	
 	PrintByCourseCode(list, CourseCode);
-	char TaskName[MAX_NAME_LEN]= GetTaskName;
+	printf("Enter the task name: ");
+	char TaskName[MAX_NAME_LEN]= GetTaskNameFromUser;
 	LISTNODE* FoundNode = FindListNode(list, CourseCode, TaskName);
 	if (FoundNode == NULL) {
 		printf("Task not found\n");

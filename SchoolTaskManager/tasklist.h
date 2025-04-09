@@ -13,12 +13,13 @@ typedef struct listnode {
 // Create
 
 /// Adds a new node into the list **IN CORRECT ORDER (head = soonest, tail = latest)**
-void AddListNode(LISTNODE* list,TASK Task);
+void AddListNode(LISTNODE** list,TASK Task);
 
 // Delete
 
+/// Loops through the linkedlist
 /// Free node and remove from list
-void RemoveListNode(LISTNODE* Node);
+void RemoveListNode(LISTNODE* Node, LISTNODE* NodeToDelete);
 
 /// Runs RemoveListNode on all nodes
 void DeleteList(LISTNODE* Head);
@@ -28,12 +29,15 @@ void DeleteList(LISTNODE* Head);
 /// Prints task from each node
 void PrintAllList(LISTNODE* Head);
 
+/// Loops through the linkedlist
 /// Prints task from each node that has a certain course code
 void PrintByCourseCode(LISTNODE* Head, char* CourseCode);
 
+/// Loops through the linkedlist
 /// Prints next upcoming 'Num' tasks
 void PrintUpcomingTask(LISTNODE* Head, int Num);
 
+/// Loops through the linkedlist
 /// 1. Ask for CC from user
 /// 2. PrintByCourseCode all tasks that belong to the input CC
 /// 3. Ask for TaskName from user
