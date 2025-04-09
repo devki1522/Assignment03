@@ -6,139 +6,204 @@
 #include "date.h"
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-void AddListNode(LISTNODE* list, TASK Task) {
-	// allocate memory for a new list node
-	LISTNODE* NewNode = (LISTNODE*)malloc(sizeof(LISTNODE));
-	if (NewNode == NULL) {
+bool AddListNode(PLISTNODE* List, TASK Task) {	
+
+	// Allocate memory for a new list node
+	PLISTNODE newNode = (PLISTNODE)malloc(sizeof(LISTNODE));
+	if (newNode == NULL) {
 		fprintf(stderr, "Memory allocation failed\n");
-		return;
+		return false;
 	}
-	// copy stuff 
-	NewNode->task = Task;
-	NewNode->next = NULL;
-	if (list == NULL) {
-		return;		
+	// Copy stuff 
+	newNode->task = Task;
+	newNode->next = NULL;
+
+	// If list doesn't exist , create it
+	if (*List == NULL) {
+		*List = newNode;
+		return true;
 	}
-	//sort the list to save the new node
-	LISTNODE* Current = list;
-	LISTNODE* Previous = NULL;
-	while (Current != NULL && IsDate1SoonerThanDate2(Current->task.dueDate, Task.dueDate)) {
-		Previous = Current;
-		Current = Current->next;
+			
+	// Sort the list to save the new node
+	PLISTNODE current = *List;
+	PLISTNODE previous = NULL;
+	while (current != NULL && IsDate1SoonerThanDate2(current->task.dueDate, Task.dueDate)) {
+		previous = current;
+		current = current->next;
 	}
-	if (Previous == NULL) {
-		NewNode->next = list;
-		return;
+	if (previous == NULL) {
+		newNode->next = *List;
+		*List = newNode;
+		return true;
 	}
 	else {
-		NewNode->next = Current;
-		Previous->next = NewNode;
+		newNode->next = current;
+		previous->next = newNode;
 	}
-	return;
+	return true;
 }
-void RemoveListNode(LISTNODE* Node, LISTNODE* NodeToDelete) {
+
+bool RemoveListNode(PLISTNODE* List, PLISTNODE NodeToDelete) {
 	// check if the task exists and delete it
-	if (Node == NULL || NodeToDelete == NULL) {
-		fprintf(stderr, "List is Empty. ");
-		return ;
+	if (*List == NULL) {
+		fprintf(stderr, "List is Empty.\n");
+		return false;
 	}
-	if (Node == NodeToDelete) {		
-		LISTNODE* NewNode = Node->next;
-		free(Node);
-		return ;
+
+	if (NodeToDelete == NULL) {
+		fprintf(stderr, "NodeToDelete is NULL.\n");
+		return false;
 	}
-	LISTNODE* Current = Node;
-	while (Current != NULL && Current->next != NodeToDelete)
-	{
-		Current = Current->next;
-	}
-	if (Current != NULL) {
-		Current->next = NodeToDelete->next;
+
+	if (*List == NodeToDelete) { // If first node is node to delete
+		*List = NodeToDelete->next;
 		free(NodeToDelete);
+		return true;
 	}
-	else 
+
+	PLISTNODE current = *List;
+	while (current->next != NULL && current->next != NodeToDelete)
+		current = current->next;
+
+	if (current->next == NULL) {
 		fprintf(stderr, "Node not found in the list.\n");
+		return true; // If not in list, all good
+	}
+
+	current->next = NodeToDelete->next; // Remove node from list
+	free(NodeToDelete);
+
+	return true;
 }
 
 
-void DeleteList(LISTNODE* Node) {
+void DeleteList(PLISTNODE* List) {
 	// delete all nodes in the list one by one 
-	LISTNODE* Current = Node;
-	LISTNODE* NextNode;
-	while (Current != NULL) {
-		NextNode = Current->next;
-		free(Current);
-		Current = NextNode;
+	PLISTNODE current = *List;
+	PLISTNODE nextNode;
+	while (current != NULL) {
+		nextNode = current->next;
+		free(current);
+		current = nextNode;
 	}
-	
+
+	*List = NULL; // Set ptr back to NULL (not to reset, just to avoid dangling ptr)
 }
 
-void PrintAllList(LISTNODE* Node) {
-	LISTNODE* Current = Node;
-	
-	while (Current != NULL) {
-		TASK Task = Current->task;
-		PrintTask(&Task);
-		Current = Current->next;
+void PrintAllList(PLISTNODE List) {
+	PLISTNODE current = List;
+
+	if (current == NULL) {
+		printf("No tasks in the list.\n");
+		return;
 	}
-	printf("\n");
+
+	PrintTaskHeader();
+
+	while (current != NULL) {
+		PrintTask(current->task);
+		current = current->next;
+	}
 }
 
-void PrintByCourseCode(LISTNODE* Node, char* CourseCode) {
-	LISTNODE* Current = Node;
-	
-	while (Current != NULL) {
-		TASK Task = Current->task;
-		if (strcmp(Current->task.courseCode, CourseCode) == 0) {
-			PrintTask(&Task);
-		}
-		Current = Current->next;
-	}
-	printf("\n");
+void PrintByCourseCode(PLISTNODE List, char* CourseCode) {
+	PLISTNODE current = List;
 
+	if (TasksWithCourseCodeCount(List, CourseCode) == 0) {
+		printf("No tasks with that course code in the list.\n");
+		return;
+	}
+
+	PrintTaskHeader();
+
+	while (current != NULL) {
+		TASK task = current->task;
+		if (strcmp(task.courseCode, CourseCode) == 0)
+			PrintTask(task);
+
+		current = current->next;
+	}
 }
 
-void PrintUpcomingTask(LISTNODE* Node, int Num) {
-	LISTNODE* Current = Node;
+void PrintUpcomingTask(PLISTNODE List, int Num) {
+	PLISTNODE current = List;
+
+	if (current == NULL) {
+		printf("No tasks in the list.\n");
+		return;
+	}
+
+	PrintTaskHeader();
 	
 	int count = 0;
-	while (Current != NULL && count < Num) {
-		TASK Task = Current->task;
-		PrintTask(&Task);
-		Current = Current->next;
+	while (count < Num) {
+		if (current == NULL) {
+			printf("No more tasks in the list.\n");
+			return;
+		}
+		PrintTask(current->task);
+		current = current->next;
 		count++;
 	}
-	printf("\n");
 }
 
-LISTNODE* SearchLinkedList(LISTNODE* Node) {
-	LISTNODE* list = {0};
+PLISTNODE SearchLinkedList(PLISTNODE List) {
+	PLISTNODE list = {0};
+
+	// COURSE CODE SORTING
 	printf("Enter the course code: ");
-	char CourseCode[COURSE_CODE_LEN] = GetTaskCourseCodeFromUser;	
-	PrintByCourseCode(list, CourseCode);
+	char courseCode[COURSE_CODE_LEN];
+	GetCourseCodeFromUser(courseCode);
+
+	PrintByCourseCode(list, courseCode);
+
+	// TASK NAME SORTING
 	printf("Enter the task name: ");
-	char TaskName[MAX_NAME_LEN]= GetTaskNameFromUser;
-	LISTNODE* FoundNode = FindListNode(list, CourseCode, TaskName);
-	if (FoundNode == NULL) {
+	char taskName[MAX_NAME_LEN];
+	GetTaskNameFromUser(taskName);
+
+	PLISTNODE foundNode = FindListNode(list, courseCode, taskName);
+
+	if (foundNode == NULL) {
 		printf("Task not found\n");
 		return NULL;
 	}
-	else {
-		PrintTask(&FoundNode->task);
-		return FoundNode;
-	}
+
+	PrintTaskHeader();
+	PrintTask(foundNode->task);
+	return foundNode;
+	
 	
 }
 
-LISTNODE* FindListNode(LISTNODE* Current, char* CourseCode, char* TaskName) {
-	if (Current == NULL) {
+PLISTNODE FindListNode(PLISTNODE Current, char* CourseCode, char* TaskName) {
+	// Base case 1 (not in list)
+	if (Current == NULL) { 
 		return NULL;
 	}
+
+	// Base case 2 (in list)
 	if (strcmp(Current->task.courseCode, CourseCode) == 0 && strcmp(Current->task.name, TaskName) == 0) {
 		return Current;
 	}
+
+	// Iterative case
 	return FindListNode(Current->next, CourseCode, TaskName);
 }
 
+int TasksWithCourseCodeCount(PLISTNODE List, char* CourseCode) {
+	PLISTNODE current = List;
+	int count;
 
+	while (current != NULL) {
+		if (strcmp(current->task.courseCode, CourseCode) == 0)
+			count++;
+			
+		current = current->next;
+	}
+
+	return count;
+}
