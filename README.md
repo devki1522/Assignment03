@@ -33,6 +33,9 @@ Planning - All ideas, code flow, and interface planning done together
 - CreateDate()
 - GetCurrentDate()
 - IsDate1SoonerThanDate2()
+- IsDayValid()
+- IsMonthValid()
+- IsYearValid()
 
 ### FileIO Component - Devki
 - LoadTasksfromDatabase() - DONE // spencer double check
