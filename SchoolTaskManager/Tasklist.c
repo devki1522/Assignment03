@@ -3,10 +3,11 @@
 
 #include "taskList.h"
 #include "task.h"
+#include "date.h"
 #include <stdio.h>
 #include <ctype.h>
 
-void AddListNode(LISTNODE** list, TASK Task) {
+void AddListNode(LISTNODE* list, TASK Task) {
 	// allocate memory for a new list node
 	LISTNODE* NewNode = (LISTNODE*)malloc(sizeof(LISTNODE));
 	if (NewNode == NULL) {
@@ -16,38 +17,38 @@ void AddListNode(LISTNODE** list, TASK Task) {
 	// copy stuff 
 	NewNode->task = Task;
 	NewNode->next = NULL;
-	if (*list == NULL) {
-		*list = NewNode;
-		return;
+	if (list == NULL) {
+		return;		
 	}
 	//sort the list to save the new node
-	LISTNODE* Current = *list;
+	LISTNODE* Current = list;
 	LISTNODE* Previous = NULL;
-	while (Current != NULL && CompareDates(Current->task.dueDate, Task.dueDate) < 0) {
+	while (Current != NULL && IsDate1SoonerThanDate2(Current->task.dueDate, Task.dueDate)) {
 		Previous = Current;
 		Current = Current->next;
 	}
 	if (Previous == NULL) {
-		NewNode->next = *list;
-		*list = NewNode;
+		NewNode->next = list;
+		return;
 	}
 	else {
 		NewNode->next = Current;
 		Previous->next = NewNode;
 	}
+	return;
 }
-void RemoveListNode(LISTNODE** Node, LISTNODE* NodeToDelete) {
+void RemoveListNode(LISTNODE* Node, LISTNODE* NodeToDelete) {
 	// check if the task exists and delete it
-	if (*Node == NULL || NodeToDelete == NULL) {
+	if (Node == NULL || NodeToDelete == NULL) {
 		fprintf(stderr, "List is Empty. ");
-		return;
+		return ;
 	}
-	if (*Node == NodeToDelete) {		
-		*Node = (*Node)->next;
-		free(NodeToDelete);
-		return;
+	if (Node == NodeToDelete) {		
+		LISTNODE* NewNode = Node->next;
+		free(Node);
+		return ;
 	}
-	LISTNODE* Current = *Node;
+	LISTNODE* Current = Node;
 	while (Current != NULL && Current->next != NodeToDelete)
 	{
 		Current = Current->next;
@@ -61,17 +62,16 @@ void RemoveListNode(LISTNODE** Node, LISTNODE* NodeToDelete) {
 }
 
 
-void DeleteList(LISTNODE** Node) {
+void DeleteList(LISTNODE* Node) {
 	// delete all nodes in the list one by one 
-	LISTNODE* Current = *Node;
+	LISTNODE* Current = Node;
 	LISTNODE* NextNode;
 	while (Current != NULL) {
 		NextNode = Current->next;
 		free(Current);
 		Current = NextNode;
 	}
-	*Node = NULL;
-
+	
 }
 
 void PrintAllList(LISTNODE* Node) {

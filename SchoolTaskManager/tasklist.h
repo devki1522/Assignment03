@@ -19,23 +19,23 @@ void AddListNode(LISTNODE** list,TASK Task);
 
 /// Loops through the linkedlist
 /// Free node and remove from list
-void RemoveListNode(LISTNODE* Node, LISTNODE* NodeToDelete);
+void RemoveListNode(LISTNODE** Node, LISTNODE* NodeToDelete);
 
 /// Runs RemoveListNode on all nodes
-void DeleteList(LISTNODE* Head);
+void DeleteList(LISTNODE** Node);
 
 // Read
 
 /// Prints task from each node
-void PrintAllList(LISTNODE* Head);
+void PrintAllList(LISTNODE* Node);
 
 /// Loops through the linkedlist
 /// Prints task from each node that has a certain course code
-void PrintByCourseCode(LISTNODE* Head, char* CourseCode);
+void PrintByCourseCode(LISTNODE* Node, char* CourseCode);
 
 /// Loops through the linkedlist
 /// Prints next upcoming 'Num' tasks
-void PrintUpcomingTask(LISTNODE* Head, int Num);
+void PrintUpcomingTask(LISTNODE* Node, int Num);
 
 /// Loops through the linkedlist
 /// 1. Ask for CC from user
@@ -43,7 +43,7 @@ void PrintUpcomingTask(LISTNODE* Head, int Num);
 /// 3. Ask for TaskName from user
 /// 4. Call FindListNode with info
 /// 5. If FindListNode returns null, print "cant find"
-LISTNODE* SearchLinkedList(); 
+LISTNODE* SearchLinkedList(LISTNODE* Node); 
 
 /// Recursive search through LL until finds task with matching CC and TaskName
 LISTNODE* FindListNode(LISTNODE* Current, char* CourseCode, char* TaskName); // make a find recursive function for searching 
