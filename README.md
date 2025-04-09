@@ -35,5 +35,5 @@ Planning - All ideas, code flow, and interface planning done together
 - IsDate1SoonerThanDate2()
 
 ### FileIO Component - Devki
-- LoadTasksfromDatabase()
-- SaveTaskstoDatabase()
+- LoadTasksfromDatabase() - DONE // spencer double check
+- SaveTaskstoDatabase() - DONE // spencer double check

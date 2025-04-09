@@ -13,7 +13,7 @@ typedef struct listnode {
 // Create
 
 /// Adds a new node into the list **IN CORRECT ORDER (head = soonest, tail = latest)**
-LISTNODE* AddListNode(TASK Task);
+void AddListNode(LISTNODE* list,TASK Task);
 
 // Delete
 

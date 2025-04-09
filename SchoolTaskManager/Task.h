@@ -5,6 +5,8 @@
 
 #include "date.h"
 
+#include <stdbool.h>
+
 #define MAX_NAME_LEN 20 
 #define COURSE_CODE_LEN 10 // Conestoga course codes are 9 chars, plus \0
 
@@ -17,31 +19,32 @@ typedef struct Task {
 
 // Create
 
-TASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate);
+PTASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate);
 
 // Read
 
-void PrintTask(TASK Task);
+void PrintTaskHeader(PTASK Task);
+void PrintTask(PTASK Task);
 
 // Getters
 
-char* GetTaskName(TASK Task);
+char* GetTaskName(PTASK Task);
 
-char* GetTaskCourseCode(TASK Task);
+char* GetTaskCourseCode(PTASK Task);
 
-int GetTaskWeight(TASK Task);
+int GetTaskWeight(PTASK Task);
 
-DATE GetTaskDueDate(TASK Task);
+DATE GetTaskDueDate(PTASK Task);
 
 // Setters
 
-void SetTaskName(PTASK Task, char* Name);
+bool SetTaskName(PTASK Task, char* Name);
 
-void SetTaskCourseCode(PTASK Task, char* CourseCode);
+bool SetTaskCourseCode(PTASK Task, char* CourseCode);
 
-void SetTaskWeight(PTASK Task, int Weight);
+bool SetTaskWeight(PTASK Task, int Weight);
 
-void SetTaskDueDate(PTASK Task, DATE DueDate);
+bool SetTaskDueDate(PTASK Task, DATE DueDate);
 
 // Delete - not needed
 
