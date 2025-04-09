@@ -4,74 +4,216 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "task.h"
 #include "date.h"
-#include <stdio.h>4
+#include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
-PTASK CreateTask(char* NewName, char* NewCourseCode, int NewWeight, DATE NewDueDate) {
+TASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate) {
 	PTASK newTask = { 0 };
-	SetTaskName(newTask, NewName);
-	SetTaskCourseCode(newTask, NewCourseCode);
-	SetTaskWeight(newTask, NewWeight);
-	SetTaskDueDate(newTask, NewDueDate);
+	SetTaskName(newTask, Name);
+	SetTaskCourseCode(newTask, CourseCode);
+	SetTaskWeight(newTask, Weight);
+	SetTaskDueDate(newTask, DueDate);
 	
-	return newTask;
+	return *newTask;
 }
 
-void PrintTaskHeader(PTASK Task)
-{	printf("+--------------------+-------------+------------+-----------------+\n");
-	printf("|     Task Name      | Course Code |   Weight   |     Due Date    |\n");
-	printf("+--------------------+-------------+------------+-----------------+\n");
-	
-	return;
+void PrintTaskHeader() {	
+	printf("+----------------------+-------------+------------+-----------------+\n");
+	printf("|      Task Name       | Course Code |   Weight   |     Due Date    |\n");
+	printf("+----------------------+-------------+------------+-----------------+\n");
 }
 
-void PrintTask(PTASK Task)
-{
-	printf("| %-20s | %-9s | %-3d % | %02d/%02d/%04d |\n", Task -> name, Task-> courseCode, Task-> weight, Task-> dueDate.day,
+void PrintTask(PTASK Task){
+	printf("| %-20s |  %-9s  |    %3d%%    |   %02d/%02d/%04d    |\n", Task->name, Task->courseCode, Task->weight, Task->dueDate.day,
 			Task-> dueDate.month, Task-> dueDate.year );
-	printf("+--------------------+-------------+------------+-----------------+\n");
-
-	return;
+	printf("+----------------------+-------------+------------+-----------------+\n");
 }
 
 
 // GETTERS
 
-//REMINDER: GETTERS NEED TO BE CHECKED AND MODIFIED [MAYBE :) ]
-char* GetTaskName(PTASK TASK) {
-	return TASK->name;
+char* GetTaskName(PTASK Task) {
+	return Task->name;
 }
 
-char* GetTaskCourseCode(PTASK TASK) {
-	return TASK->courseCode;
+char* GetTaskCourseCode(PTASK Task) {
+	return Task->courseCode;
 }
 
-int GetTaskWeight(PTASK TASK) {
-	return TASK->weight;
+int GetTaskWeight(PTASK Task) {
+	return Task->weight;
 }
 
-DATE GetTaskDueDate(PTASK TASK) {
-	return TASK->dueDate;
+DATE GetTaskDueDate(PTASK Task) {
+	return Task->dueDate;
 }
 
 // SETTERS
 
-bool SetTaskName(PTASK Task, char* NewName) {
-	strncpy(Task->name, NewName, MAX_NAME_LEN);
+bool SetTaskName(PTASK Task, char* TaskName) {
+	if (IsTaskNameValid(TaskName) == false)
+		return false;
+
+	strncpy(Task->name, TaskName, MAX_NAME_LEN);
 	return true;
 }
 
-bool SetTaskCourseCode(PTASK Task, char* NewCourseCode) {
-	strncpy(Task-> courseCode, NewCourseCode, COURSE_CODE_LEN);
+bool SetTaskCourseCode(PTASK Task, char* CourseCode) {
+	if (IsCourseCodeValid(CourseCode) == false)
+		return false;
+
+	strncpy(Task->courseCode, CourseCode, COURSE_CODE_LEN);
 	return true;
 }
 
-bool SetTaskWeight(PTASK Task, int NewWeight) {
-	Task->weight = NewWeight;
+bool SetTaskWeight(PTASK Task, int Weight) {
+	if (IsWeightValid(Weight) == false)
+		return false;
+
+	Task->weight = Weight;
 	return true;
 }
 
-bool SetTaskDueDate(PTASK Task, DATE NewDueDate) {
-	Task->dueDate = NewDueDate;
+bool SetTaskDueDate(PTASK Task, DATE DueDate) {
+	DATE currentDate = GetCurrentDate();
+
+	if (IsDate1SoonerThanDate2(DueDate, currentDate)) {
+		fprintf(stderr, "Due date cannot be set to a time before today.\n");
+		return false;
+	}
+
+	Task->dueDate = DueDate;
+	return true;
+}
+
+// Input from user
+
+void GetTaskNameFromUser(char* TaskName) {
+	bool goodInput = false;
+
+	fprintf(stdout, "Input a task name: ");
+
+	do {
+		int returnVal = scanf("%20s", TaskName);
+
+		if (returnVal != 1) {
+			fprintf(stderr, "Bad input recieved. Try again.\n");
+		}
+		else {
+			if (IsTaskNameValid(TaskName))
+				goodInput = true;
+		}
+			
+	} while (!goodInput);
+}
+
+
+void GetCourseCodeFromUser(char* CourseCode) {
+	bool goodInput = false;
+
+	fprintf(stdout, "Input a course code: ");
+
+	do {
+		int returnVal = scanf("%10s", CourseCode);
+
+		if (returnVal != 1) {
+			fprintf(stderr, "Bad input recieved. Try again.\n");
+		}
+		else {
+			if (IsCourseCodeValid(CourseCode))
+				goodInput = true;
+		}
+
+	} while (!goodInput);
+}
+
+int GetWeightFromUser() {
+	int weight;
+	bool goodInput = false;
+
+	fprintf(stdout, "Input a percentage weight: ");
+
+	do {
+		int returnVal = scanf("%d", &weight);
+
+		if (returnVal != 1) {
+			fprintf(stderr, "Bad input recieved. Try again.\n");
+		}
+		else {
+			if (IsWeightValid(weight))
+				goodInput = true;
+		}
+
+	} while (!goodInput);
+
+	return weight;
+}
+
+DATE GetDateFromUser() {
+	bool goodInput = false;
+
+	int day, month, year;
+	fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
+
+	do {
+		int returnVal = scanf("%d/%d/%d", &day, &month, &year);
+
+		if (returnVal != 3) {
+			fprintf(stderr, "Bad input recieved. Expected 3 integers. Try again.\n");
+		}
+		else {
+			if (!IsDayValid(day)) {
+				fprintf(stderr, "Day is invalid, should be between 1-31.\n");
+			}
+			else if (!IsMonthValid(month)) {
+				fprintf(stderr, "Month is invalid, should be between 1-12.\n");
+			}
+			else if (!IsYearValid(year)) {
+				fprintf(stderr, "Year is invalid, should be between 0-9999.\n");
+			}
+			else {
+				goodInput = true;
+			}
+		}
+
+	} while (!goodInput);
+
+	return CreateDate(day, month, year);
+}
+
+// Validations
+
+bool IsTaskNameValid(char* TaskName) {
+	return true; // All task names are valid for now
+}
+
+bool IsCourseCodeValid(char* CourseCode) {
+	if (strlen(CourseCode) != 9) {
+		fprintf(stderr, "Invalid course code - should be 9 characters.\n");
+		return false;
+	}
+	for (int i = 0; i < 4; i++) {
+		if (isalpha(CourseCode[i]) == 0) { // returns 0 if isnt a alpha char
+			fprintf(stderr, "Invalid course code - first 4 chars includes non-alpha values.\n");
+			return false;
+		}
+	}
+	for (int i = 4; i < 9; i++) {
+		if (isdigit(CourseCode[i]) == 0) { // returns 0 if isnt a numeric char
+			fprintf(stderr, "Invalid course code - last 5 chars includes non-numeric values.\n");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool IsWeightValid(int Weight) {
+	if (Weight < 0 || Weight > 100) {
+		fprintf(stderr, "Invalid task weight - Should be between 0 - 100 inclusive.\n");
+		return false;
+	}
+
 	return true;
 }

@@ -19,12 +19,14 @@ typedef struct Task {
 
 // Create
 
-PTASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate);
+TASK CreateTask(char* NewName, char* NewCourseCode, int NewWeight, DATE NewDueDate);
+
 
 // Read
 
-void PrintTaskHeader(PTASK Task);
+void PrintTaskHeader();
 void PrintTask(PTASK Task);
+
 
 // Getters
 
@@ -36,9 +38,10 @@ int GetTaskWeight(PTASK Task);
 
 DATE GetTaskDueDate(PTASK Task);
 
+
 // Setters
 
-bool SetTaskName(PTASK Task, char* Name);
+bool SetTaskName(PTASK Task, char* TaskName);
 
 bool SetTaskCourseCode(PTASK Task, char* CourseCode);
 
@@ -46,5 +49,21 @@ bool SetTaskWeight(PTASK Task, int Weight);
 
 bool SetTaskDueDate(PTASK Task, DATE DueDate);
 
-// Delete - not needed
 
+// User Input
+
+void GetTaskNameFromUser(char* TaskName);
+
+void GetCourseCodeFromUser(char* CourseCode);
+
+int GetWeightFromUser();
+
+DATE GetDateFromUser();
+
+// Validations
+
+bool IsTaskNameValid(char* TaskName);
+
+bool IsCourseCodeValid(char* CourseCode);
+
+bool IsWeightValid(int Weight);

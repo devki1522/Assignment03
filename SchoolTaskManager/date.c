@@ -27,22 +27,22 @@ DATE GetCurrentDate() {
 }
 
 bool IsDate1SoonerThanDate2(DATE date1, DATE date2) {
-	if (date1.year > date2.year)
-		return true;
 	if (date1.year < date2.year)
+		return true;
+	if (date1.year > date2.year)
 		return false;
 
-	if (date1.month > date2.month)
-		return true;
 	if (date1.month < date2.month)
-		return false;
-
-	if (date1.day > date2.day)
 		return true;
-	if (date1.day < date2.day)
+	if (date1.month > date2.month)
 		return false;
 
-	return true; // if dates are equal, default considered sooner
+	if (date1.day < date2.day)
+		return true;
+	if (date1.day > date2.day)
+		return false;
+
+	return false; // if dates are equal, default considered not sooner
 }
 
 bool IsDayValid(int day) {
