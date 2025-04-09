@@ -9,13 +9,13 @@
 #include <ctype.h>
 
 TASK CreateTask(char* Name, char* CourseCode, int Weight, DATE DueDate) {
-	PTASK newTask = { 0 };
-	SetTaskName(newTask, Name);
-	SetTaskCourseCode(newTask, CourseCode);
-	SetTaskWeight(newTask, Weight);
-	SetTaskDueDate(newTask, DueDate);
-	
-	return *newTask;
+    TASK newTask = { 0 };
+    SetTaskName(&newTask, Name);
+    SetTaskCourseCode(&newTask, CourseCode);
+    SetTaskWeight(&newTask, Weight);
+    SetTaskDueDate(&newTask, DueDate);
+
+    return newTask;
 }
 
 void PrintTaskHeader() {	
@@ -24,29 +24,29 @@ void PrintTaskHeader() {
 	printf("+----------------------+-------------+------------+-----------------+\n");
 }
 
-void PrintTask(PTASK Task){
-	printf("| %-20s |  %-9s  |    %3d%%    |   %02d/%02d/%04d    |\n", Task->name, Task->courseCode, Task->weight, Task->dueDate.day,
-			Task-> dueDate.month, Task-> dueDate.year );
+void PrintTask(TASK Task){
+	printf("| %-20s |  %-9s  |    %3d%%    |   %02d/%02d/%04d    |\n", Task.name, Task.courseCode, Task.weight, Task.dueDate.day,
+			Task.dueDate.month, Task.dueDate.year );
 	printf("+----------------------+-------------+------------+-----------------+\n");
 }
 
 
 // GETTERS
 
-char* GetTaskName(PTASK Task) {
-	return Task->name;
+char* GetTaskName(TASK Task) {
+	return Task.name;
 }
 
-char* GetTaskCourseCode(PTASK Task) {
-	return Task->courseCode;
+char* GetTaskCourseCode(TASK Task) {
+	return Task.courseCode;
 }
 
-int GetTaskWeight(PTASK Task) {
-	return Task->weight;
+int GetTaskWeight(TASK Task) {
+	return Task.weight;
 }
 
-DATE GetTaskDueDate(PTASK Task) {
-	return Task->dueDate;
+DATE GetTaskDueDate(TASK Task) {
+	return Task.dueDate;
 }
 
 // SETTERS
@@ -148,38 +148,6 @@ int GetWeightFromUser() {
 	} while (!goodInput);
 
 	return weight;
-}
-
-DATE GetDateFromUser() {
-	bool goodInput = false;
-
-	int day, month, year;
-	fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
-
-	do {
-		int returnVal = scanf("%d/%d/%d", &day, &month, &year);
-
-		if (returnVal != 3) {
-			fprintf(stderr, "Bad input recieved. Expected 3 integers. Try again.\n");
-		}
-		else {
-			if (!IsDayValid(day)) {
-				fprintf(stderr, "Day is invalid, should be between 1-31.\n");
-			}
-			else if (!IsMonthValid(month)) {
-				fprintf(stderr, "Month is invalid, should be between 1-12.\n");
-			}
-			else if (!IsYearValid(year)) {
-				fprintf(stderr, "Year is invalid, should be between 0-9999.\n");
-			}
-			else {
-				goodInput = true;
-			}
-		}
-
-	} while (!goodInput);
-
-	return CreateDate(day, month, year);
 }
 
 // Validations

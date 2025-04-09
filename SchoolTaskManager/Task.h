@@ -25,18 +25,18 @@ TASK CreateTask(char* NewName, char* NewCourseCode, int NewWeight, DATE NewDueDa
 // Read
 
 void PrintTaskHeader();
-void PrintTask(PTASK Task);
+void PrintTask(TASK Task);
 
 
 // Getters
 
-char* GetTaskName(PTASK Task);
+char* GetTaskName(TASK Task);
 
-char* GetTaskCourseCode(PTASK Task);
+char* GetTaskCourseCode(TASK Task);
 
-int GetTaskWeight(PTASK Task);
+int GetTaskWeight(TASK Task);
 
-DATE GetTaskDueDate(PTASK Task);
+DATE GetTaskDueDate(TASK Task);
 
 
 // Setters
@@ -57,8 +57,6 @@ void GetTaskNameFromUser(char* TaskName);
 void GetCourseCodeFromUser(char* CourseCode);
 
 int GetWeightFromUser();
-
-DATE GetDateFromUser();
 
 // Validations
 
