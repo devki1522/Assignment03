@@ -1,10 +1,12 @@
 // Group 2 - PROG71990 W25 - Group Project - School Task Manager
 // Implementation of the file Input/Output functions
 
+#define _CRT_SECURE_NO_WARNINGS
 #include "fileIO.h"
 #include "taskList.h"
 #include <stdio.h>
 #include "Task.h"
+#include <stdlib.h>
 
 PLISTNODE LoadTasksfromDatabase() {
 	FILE* file = fopen("database.txt", "r");
