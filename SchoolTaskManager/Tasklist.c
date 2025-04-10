@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 bool AddListNode(PLISTNODE* List, TASK Task) {	
 
@@ -196,7 +197,7 @@ PLISTNODE FindListNode(PLISTNODE Current, char* CourseCode, char* TaskName) {
 
 int TasksWithCourseCodeCount(PLISTNODE List, char* CourseCode) {
 	PLISTNODE current = List;
-	int count;
+	int count = 0;
 
 	while (current != NULL) {
 		if (strcmp(current->task.courseCode, CourseCode) == 0)

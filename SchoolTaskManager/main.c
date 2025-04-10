@@ -8,94 +8,100 @@
 #include <ctype.h>
 
 /// Prints start up message (welcome, urgent tasks, outdated task notif.)
-void printMOTD(PLISTNODE TaskList, DATE CurDate);
+void printMOTD(PLISTNODE TaskList);
 
 /// Prints user menu
 void printMenu();
 
 int main(void) {
-	DATE curDate = { 0 };// GetCurrentDate();
 	PLISTNODE taskList = LoadTasksfromDatabase();
 
-	printMOTD(taskList, curDate);
+	printMOTD(taskList);
 
 	bool running = true;
 	char userSelection;
 	do {
 		printMenu();
 
-		while (fscanf(stdin, " %c ", &userSelection)); //Scan until char token is recieved
+		while (fscanf(stdin, " %c ", &userSelection) != 1); //Scan until char token is recieved
 
 		switch (toupper(userSelection)) { //Put the cases in {} due to: https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
 		case 'A': // Add New Task
 		{
-			TASK newTask;
+			char taskName[MAX_NAME_LEN];
+			GetTaskNameFromUser(taskName);
 
-			// Set task name [no validation]
-			char name[MAX_NAME_LEN];
-			fprintf(stdout, "Enter the name of the task: ");
-			while (fscanf(stdin, "%s", name) != 1);
-			SetTaskName(&newTask, name);
-
-			// Set task course code [validation]
 			char courseCode[COURSE_CODE_LEN];
-			fprintf(stdout, "Enter the course code: ");
-			fscanf(stdin, "%s", courseCode);
-			while (SetTaskCourseCode(&newTask, courseCode) == false) {
-				fprintf(stderr, "Invalid course code. Please try again: ");
-				fscanf(stdin, "%s", courseCode);
-			}
+			GetCourseCodeFromUser(courseCode);
 
-			// Set task weight
-			int weight;
-			fprintf(stdout, "Enter the weight of the task: ");
-			while (fscanf(stdin, "%d", &weight) != 1 || weight < 0)
-				fprintf(stderr, "Input not an integer or is negative. Please try again: ");
-			SetTaskWeight(&newTask, weight);
+			int weight = GetWeightFromUser();
 
-			// Set task due date
-			int day, month, year;
-			fprintf(stdout, "Enter the due date (DD/MM/YYYY): ");
-			while (fscanf(stdin, "%d/%d/%d", &day, &month, &year) != 3
-					&& IsDayValid(day) 
-					&& IsMonthValid(month) 
-					&& IsYearValid(year))
-				fprintf(stdout, "The input date is invalid. Please try again: ");
+			DATE date = GetDateFromUser();
 
-			SetTaskDueDate(&newTask, CreateDate(day, month, year));
+			TASK task = CreateTask(taskName, courseCode, weight, date);
 
-			AddListNode(taskList, newTask);
+			AddListNode(taskList, task);
 			break;
 		}
 		case 'B': // Remove Task
-		{
-			RemoveListNode(SearchLinkedList());
-
+			RemoveListNode(taskList, SearchLinkedList(taskList));
 			break;
-		}
 		case 'C': // Update Task
 		{
-			fprintf(stdout, "Which task would you like to update?\n");
-			TASK* taskToUpdate = SearchLinkedList();
+			TASK* taskToUpdate = SearchLinkedList(taskList);
 			if (taskToUpdate == NULL) {
 				fprintf(stderr, "Task not found.\n");
 				break;
 			}
 
-			UpdateTask(taskToUpdate);
+			// Ask what to update
+			fprintf(stdout, "What would you like to update?\n"
+				"A - Task Name\n"
+				"B - Course Code\n"
+				"C - Weight\n"
+				"D - Due Date\n"
+				"Your selection: ");
+
+			char updateSelection;
+			while (fscanf(stdin, " %c ", &updateSelection) != 1);
+
+			switch (toupper(updateSelection)) {
+			case 'A': // Task Name
+			{
+				char taskName[MAX_NAME_LEN];
+				GetTaskNameFromUser(taskName);
+				SetTaskName(taskToUpdate, taskName);
+				break;
+			}
+			case 'B': // Course Code
+			{
+				char courseCode[COURSE_CODE_LEN];
+				GetCourseCodeFromUser(courseCode);
+				SetTaskCourseCode(taskToUpdate, courseCode);
+				break;
+			}
+			case 'C': // Weight
+			{
+				int weight = GetWeightFromUser();
+				SetTaskWeight(taskToUpdate, weight);
+				break;
+			}
+			case 'D': // Due Date
+			{
+				DATE date = GetDateFromUser();
+				SetTaskDueDate(taskToUpdate, date);
+				break;
+			}
+			default:
+				fprintf(stderr, "Invalid selection.\n");
+				break;
+			}
 
 			break;
 		}
 		case 'D': // Display All Tasks
-		{
-			if (taskList == NULL) {
-				fprintf(stderr, "No tasks in the list.\n");
-				break;
-			}
-
 			PrintAllList(taskList);
 			break;
-		}
 		case 'E': // Display a set of tasks
 		{
 			if (taskList == NULL) {
@@ -114,8 +120,7 @@ int main(void) {
 			case 'A': // By course code
 				{
 					char courseCode[COURSE_CODE_LEN];
-					fprintf(stdout, "Enter the course code: ");
-					while (fscanf(stdin, "%s", courseCode) != 1);
+					GetCourseCodeFromUser(courseCode);
 					PrintByCourseCode(taskList, courseCode);
 					break;
 				}
@@ -140,6 +145,7 @@ int main(void) {
 					fprintf(stderr, "No tasks in the list.\n");
 					break;
 				}
+
 				// Print the first task in the list
 				fprintf(stdout, "Next due task:\n");
 				PrintUpcomingTask(taskList, 1);
@@ -154,10 +160,10 @@ int main(void) {
 
 				PLISTNODE curNode = taskList;
 				while (curNode != NULL) {
-					if (IsDate1SoonerThanDate2(GetTaskDueDate(&curNode->task), curDate)) {
+					if (IsDate1SoonerThanDate2( GetTaskDueDate(curNode->task), GetCurrentDate() )) {
 						PLISTNODE temp = curNode;
 						curNode = curNode->next;
-						RemoveListNode(temp);
+						RemoveListNode(taskList, temp);
 					}
 					else {
 						curNode = curNode->next;
@@ -183,7 +189,7 @@ int main(void) {
 
 
 
-void printMOTD(PLISTNODE TaskList, DATE CurDate) {
+void printMOTD(PLISTNODE TaskList) {
 	fprintf(stdout,
 		"~~~ Welcome to the School Task Manager! ~~~\n"
 		"Here you can manage all of your upcoming school tasks.\n"
@@ -196,7 +202,7 @@ void printMOTD(PLISTNODE TaskList, DATE CurDate) {
 	fprintf(stdout, "Here are your next most urgent tasks:\n");
 	PrintUpcomingTask(TaskList, 3);
 
-	if ( IsDate1SoonerThanDate2(GetTaskDueDate(&TaskList->task), CurDate) ) {
+	if ( IsDate1SoonerThanDate2(GetTaskDueDate(TaskList->task), GetCurrentDate()) ) {
 		fprintf(stdout, "\nYou have some past-due tasks! If you'd like to remove them, run option G.\n\n");
 	}
 }
