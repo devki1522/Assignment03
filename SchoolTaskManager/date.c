@@ -4,6 +4,7 @@
 #include "date.h"
 #include <stdbool.h>
 #include <time.h>
+#include <stdio.h>
 
 DATE CreateDate(int day, int month, int year) {
 	DATE date = { 0 };
@@ -45,6 +46,41 @@ bool IsDate1SoonerThanDate2(DATE date1, DATE date2) {
 	return false; // if dates are equal, default considered not sooner
 }
 
+// User Inputs
+
+DATE GetDateFromUser() {
+	bool goodInput = false;
+
+	int day, month, year;
+	fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
+
+	do {
+		int returnVal = scanf("%d/%d/%d", &day, &month, &year);
+
+		if (returnVal != 3) {
+			fprintf(stderr, "Bad input recieved. Expected 3 integers. Try again.\n");
+		}
+		else {
+			if (!IsDayValid(day)) {
+				fprintf(stderr, "Day is invalid, should be between 1-31.\n");
+			}
+			else if (!IsMonthValid(month)) {
+				fprintf(stderr, "Month is invalid, should be between 1-12.\n");
+			}
+			else if (!IsYearValid(year)) {
+				fprintf(stderr, "Year is invalid, should be between 0-9999.\n");
+			}
+			else {
+				goodInput = true;
+			}
+		}
+
+	} while (!goodInput);
+
+	return CreateDate(day, month, year);
+}
+
+// Validations
 bool IsDayValid(int day) {
 	if (day < 1 || day > 31) {
 		return false;

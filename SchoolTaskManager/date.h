@@ -20,7 +20,12 @@ DATE GetCurrentDate();
 /// Compares two dates, returns true if date1 is sooner than date2
 bool IsDate1SoonerThanDate2(DATE date1, DATE date2);
 
-// Validators
+// User Inputs -------------------
+
+/// Get a valid date from user input
+DATE GetDateFromUser();
+
+// Validators --------------------
 
 /// Check if day is valid (1-31) (Ignores per-month limit (ie, April only 30 days))
 bool IsDayValid(int day);
