@@ -40,7 +40,9 @@ int main(void) {
 
 			TASK task = CreateTask(taskName, courseCode, weight, date);
 
-			AddListNode(&taskList, task);
+			if (AddListNode(&taskList, task)) {
+				fprintf(stdout, "Task Added Sucessfully");
+			}
 			break;
 		}
 		case 'B': // Remove Task
@@ -49,7 +51,10 @@ int main(void) {
 			if (nodeToRemove == NULL) 
 				break; // Error message printed in function, so not needed here
 
-			RemoveListNode(&taskList, nodeToRemove);
+			if (RemoveListNode(&taskList, nodeToRemove)) {
+				fprintf(stdout, "Task Removed Sucessfully.");
+			}
+			
 			break;
 		}
 		case 'C': // Update Task
@@ -75,20 +80,26 @@ int main(void) {
 			{
 				char taskName[MAX_NAME_LEN];
 				GetTaskNameFromUser(taskName);
-				SetTaskName(taskToUpdate, taskName);
+				if (SetTaskName(taskToUpdate, taskName)) {
+					fprintf(stdout, "Task Name Updated");
+				}
 				break;
 			}
 			case 'B': // Course Code
 			{
 				char courseCode[COURSE_CODE_LEN];
 				GetCourseCodeFromUser(courseCode);
-				SetTaskCourseCode(taskToUpdate, courseCode);
+				if (SetTaskCourseCode(taskToUpdate, courseCode)) {
+					fprintf(stdout, "Course Code Upadted.");
+				}
 				break;
 			}
 			case 'C': // Weight
 			{
 				int weight = GetWeightFromUser();
-				SetTaskWeight(taskToUpdate, weight);
+				if (SetTaskWeight(taskToUpdate, weight)){
+					fprintf(stdout, "Task Weight Updated");
+				}
 				break;
 			}
 			case 'D': // Due Date
@@ -97,7 +108,9 @@ int main(void) {
 
 				// Create a new task with the updated due date
 				TASK updatedTask = *taskToUpdate;
-				SetTaskDueDate(&updatedTask, date);
+				if (SetTaskDueDate(&updatedTask, date)) {
+					fprintf(stdout, "Task Due Date Updated ");
+				}
 
 				// Remove the old task and add the updated task
 				PLISTNODE nodeToUpdate = FindListNode(taskList, taskToUpdate->courseCode, taskToUpdate->name);

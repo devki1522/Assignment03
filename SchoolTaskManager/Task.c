@@ -98,7 +98,7 @@ void GetTaskNameFromUser(char* TaskName) {
 
 	} while (!IsTaskNameValid(buffer));
 
-	TaskName = strncpy(TaskName, buffer, MAX_NAME_LEN - 1);
+	strncpy(TaskName, buffer, MAX_NAME_LEN - 1); 
 	TaskName[MAX_NAME_LEN - 1] = '\0'; // Ensure null terminator exists
 }
 
@@ -109,10 +109,10 @@ void GetCourseCodeFromUser(char* CourseCode) {
        fprintf(stdout, "Input a course code: ");
        fgets(buffer, COURSE_CODE_LEN, stdin);
 
-	   for (int i = 0; i < MAX_NAME_LEN; i++) //Remove newline characters
+	   for (int i = 0; i < COURSE_CODE_LEN; i++) //Remove newline characters
 		   if (buffer[i] == '\n')
 			   buffer[i] = ' ';
-
+	   
    } while (!IsCourseCodeValid(buffer));
 
 	// Convert chars to uppercase, couldnt do it in strncpy due to strncpy limitations
