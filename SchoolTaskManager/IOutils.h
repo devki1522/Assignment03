@@ -1,5 +1,5 @@
 // Group 2 - PROG71990 W25 - Group Project - School Task Manager
-// Implementation of the helper I/O functions
+// Interface of the helper I/O functions
 
 #pragma once
 

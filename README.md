@@ -18,25 +18,49 @@ Planning - All ideas, code flow, and interface planning done together
 - FindListNode()
 
 ### Task Component - Tanveer
+Create
 - CreateTask()
+
+Read
+- PrintTaskHeader()
 - PrintTask()
+
+Getters
 - GetTaskName()
 - GetTaskCourseCode()
 - GetTaskWeight()
 - GetTaskDueDate()
+
+Setters
 - SetTaskName()
 - SetTaskCourseCode()
 - SetTaskWeight()
 - SetTaskDueDate()
 
+User Input
+- GetTaskNameFromUser()
+- GetCourseCodeFromUser()
+- GetWeightFromUser()
+
+Validators
+- IsTaskNameValid()
+- IsCourseCodeValid()
+- IsWeightValid()
+
 ### Date Component - Spencer
 - CreateDate()
 - GetCurrentDate()
 - IsDate1SoonerThanDate2()
+- GetDateFromUser()
 - IsDayValid()
 - IsMonthValid()
 - IsYearValid()
+- IsDateValid()
 
 ### FileIO Component - Devki
-- LoadTasksfromDatabase() - DONE // spencer double check
-- SaveTaskstoDatabase() - DONE // spencer double check
+- LoadTasksfromDatabase()
+- SaveTaskstoDatabase()
+
+### IOutils Component - Spencer
+- ClearStdin()
+- GetChar()
