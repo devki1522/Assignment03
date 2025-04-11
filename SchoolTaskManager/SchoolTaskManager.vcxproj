@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="fileIO.c" />
     <ClCompile Include="date.c" />
+    <ClCompile Include="IOutils.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="task.c" />
     <ClCompile Include="tasklist.c" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="fileIO.h" />
     <ClInclude Include="date.h" />
+    <ClInclude Include="IOutils.h" />
     <ClInclude Include="task.h" />
     <ClInclude Include="taskList.h" />
   </ItemGroup>

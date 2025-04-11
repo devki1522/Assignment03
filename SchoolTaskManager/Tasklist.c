@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "IOutils.h"
 
 bool AddListNode(PLISTNODE* List, TASK Task) {	
 
@@ -152,32 +153,28 @@ void PrintUpcomingTask(PLISTNODE List, int Num) {
 }
 
 PLISTNODE SearchLinkedList(PLISTNODE List) {
-	PLISTNODE list = {0};
-
-	// COURSE CODE SORTING
-	printf("Enter the course code: ");
 	char courseCode[COURSE_CODE_LEN];
 	GetCourseCodeFromUser(courseCode);
+	ClearStdin();
 
-	PrintByCourseCode(list, courseCode);
-
-	// TASK NAME SORTING
-	printf("Enter the task name: ");
-	char taskName[MAX_NAME_LEN];
-	GetTaskNameFromUser(taskName);
-
-	PLISTNODE foundNode = FindListNode(list, courseCode, taskName);
-
-	if (foundNode == NULL) {
-		printf("Task not found\n");
+	if (TasksWithCourseCodeCount(List, courseCode) == 0) {
+		printf("No tasks with that course code in the list.\n");
 		return NULL;
 	}
 
-	PrintTaskHeader();
-	PrintTask(foundNode->task);
+	PrintByCourseCode(List, courseCode);
+
+	char taskName[MAX_NAME_LEN];
+	GetTaskNameFromUser(taskName);
+	ClearStdin();
+
+	PLISTNODE foundNode = FindListNode(List, courseCode, taskName);
+
+	if (foundNode == NULL) {
+		printf("Task with that name not found in the list\n");
+		return NULL;
+	}
 	return foundNode;
-	
-	
 }
 
 PLISTNODE FindListNode(PLISTNODE Current, char* CourseCode, char* TaskName) {

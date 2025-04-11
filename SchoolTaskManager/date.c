@@ -52,28 +52,12 @@ DATE GetDateFromUser() {
 	bool goodInput = false;
 
 	int day, month, year;
-	fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
-
 	do {
+		fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
 		int returnVal = scanf("%d/%d/%d", &day, &month, &year);
 
-		if (returnVal != 3) {
-			fprintf(stderr, "Bad input recieved. Expected 3 integers. Try again.\n");
-		}
-		else {
-			if (!IsDayValid(day)) {
-				fprintf(stderr, "Day is invalid, should be between 1-31.\n");
-			}
-			else if (!IsMonthValid(month)) {
-				fprintf(stderr, "Month is invalid, should be between 1-12.\n");
-			}
-			else if (!IsYearValid(year)) {
-				fprintf(stderr, "Year is invalid, should be between 0-9999.\n");
-			}
-			else {
-				goodInput = true;
-			}
-		}
+		if (IsDateValid(CreateDate(day, month, year)))
+			goodInput = true;
 
 	} while (!goodInput);
 
@@ -99,5 +83,23 @@ bool IsYearValid(int year) {
 	if (year < 0 || year > 9999) {
 		return false;
 	}
+	return true;
+}
+
+bool IsDateValid(DATE date) {
+
+	if (!IsDayValid(date.day)) {
+		fprintf(stderr, "Day is invalid, should be between 1-31. Try again. \n");
+		return false;
+	}
+	if (!IsMonthValid(date.month)) {
+		fprintf(stderr, "Month is invalid, should be between 1-12. Try again. \n");
+		return false;
+	}
+	if (!IsYearValid(date.year)) {
+		fprintf(stderr, "Year is invalid, should be between 0-9999. Try again. \n");
+		return false;
+	}
+
 	return true;
 }

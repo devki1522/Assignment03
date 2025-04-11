@@ -35,3 +35,6 @@ bool IsMonthValid(int month);
 
 /// Check if year is valid (0-9999)
 bool IsYearValid(int year);
+
+/// Checks if the entire date is valid (day, month, year)
+bool IsDateValid(DATE date);

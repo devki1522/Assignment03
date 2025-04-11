@@ -6,26 +6,26 @@
 #include "fileIO.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "IOutils.h"
 
 /// Prints start up message (welcome, urgent tasks, outdated task notif.)
-void printMOTD(PLISTNODE TaskList);
+void PrintMOTD(PLISTNODE TaskList);
 
 /// Prints user menu
-void printMenu();
+void PrintMenu();
 
 int main(void) {
 	PLISTNODE taskList = LoadTasksfromDatabase();
 
-	printMOTD(taskList);
+	PrintMOTD(taskList);
 
 	bool running = true;
-	char userSelection;
 	do {
-		printMenu();
+		PrintMenu();
 
-		while (fscanf(stdin, " %c ", &userSelection) != 1); //Scan until char token is recieved
+		char userSelection = toupper(GetChar());
 
-		switch (toupper(userSelection)) { //Put the cases in {} due to: https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
+		switch (userSelection) { //Put the cases in {} due to: https://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
 		case 'A': // Add New Task
 		{
 			char taskName[MAX_NAME_LEN];
@@ -40,15 +40,21 @@ int main(void) {
 
 			TASK task = CreateTask(taskName, courseCode, weight, date);
 
-			AddListNode(taskList, task);
+			AddListNode(&taskList, task);
 			break;
 		}
 		case 'B': // Remove Task
-			RemoveListNode(taskList, SearchLinkedList(taskList));
+		{
+			PLISTNODE nodeToRemove = SearchLinkedList(taskList);
+			if (nodeToRemove == NULL) 
+				break; // Error message printed in function, so not needed here
+
+			RemoveListNode(&taskList, nodeToRemove);
 			break;
+		}
 		case 'C': // Update Task
 		{
-			TASK* taskToUpdate = SearchLinkedList(taskList);
+			PTASK taskToUpdate = &SearchLinkedList(taskList)->task;
 			if (taskToUpdate == NULL) {
 				fprintf(stderr, "Task not found.\n");
 				break;
@@ -62,8 +68,7 @@ int main(void) {
 				"D - Due Date\n"
 				"Your selection: ");
 
-			char updateSelection;
-			while (fscanf(stdin, " %c ", &updateSelection) != 1);
+			char updateSelection = toupper(GetChar());
 
 			switch (toupper(updateSelection)) {
 			case 'A': // Task Name
@@ -89,7 +94,17 @@ int main(void) {
 			case 'D': // Due Date
 			{
 				DATE date = GetDateFromUser();
-				SetTaskDueDate(taskToUpdate, date);
+
+				// Create a new task with the updated due date
+				TASK updatedTask = *taskToUpdate;
+				SetTaskDueDate(&updatedTask, date);
+
+				// Remove the old task and add the updated task
+				PLISTNODE nodeToUpdate = FindListNode(taskList, taskToUpdate->courseCode, taskToUpdate->name);
+				RemoveListNode(&taskList, nodeToUpdate);
+
+				// Add the updated task to the list so that it re-sorts into the right place
+				AddListNode(&taskList, updatedTask);
 				break;
 			}
 			default:
@@ -111,11 +126,11 @@ int main(void) {
 
 			fprintf(stdout, "How would you like to filter the tasks?\n"
 				"A - By course code\n"
-				"B - By upcoming\n"
+				"B - By most urgent (date)\n"
 				"Your selection: ");
 
-			char filterSelection;
-			while (fscanf(stdin, " %c ", &filterSelection) != 1);
+			char filterSelection = toupper(GetChar());
+
 			switch (toupper(filterSelection)) {
 			case 'A': // By course code
 				{
@@ -140,56 +155,55 @@ int main(void) {
 			break;
 			}
 		case 'F': // Display upcoming tasks
-			{
-				if (taskList == NULL) {
-					fprintf(stderr, "No tasks in the list.\n");
-					break;
-				}
-
-				// Print the first task in the list
-				fprintf(stdout, "Next due task:\n");
-				PrintUpcomingTask(taskList, 1);
+			if (taskList == NULL) {
+				fprintf(stderr, "No tasks in the list.\n");
 				break;
 			}
+
+			// Print the first task in the list
+			fprintf(stdout, "Next due task:\n");
+			PrintUpcomingTask(taskList, 1);
+			break;
 		case 'G': // Remove past-due tasks
-			{
-				if (taskList == NULL) {
-					fprintf(stderr, "No tasks in the list.\n");
-					break;
-				}
-
-				PLISTNODE curNode = taskList;
-				while (curNode != NULL) {
-					if (IsDate1SoonerThanDate2( GetTaskDueDate(curNode->task), GetCurrentDate() )) {
-						PLISTNODE temp = curNode;
-						curNode = curNode->next;
-						RemoveListNode(taskList, temp);
-					}
-					else {
-						curNode = curNode->next;
-					}
-				}
-
+			if (taskList == NULL) {
+				fprintf(stderr, "No tasks in the list.\n");
 				break;
 			}
+
+			PLISTNODE curNode = taskList;
+			while (curNode != NULL) {
+				if (IsDate1SoonerThanDate2( GetTaskDueDate(curNode->task), GetCurrentDate() )) {
+					PLISTNODE temp = curNode;
+					curNode = curNode->next;
+					RemoveListNode(&taskList, temp);
+				}
+				else {
+					curNode = curNode->next;
+				}
+			}
+
+			printf("All past-due tasks have been removed.\n");
+			break;
 		case 'H': // Quit
-			{
-				fprintf(stdout, "Have a good day! Exiting...\n");
-				running = false;
-				break;
-			}
+			fprintf(stdout, "Have a good day! Exiting...\n");
+			running = false;
+			break;
+		default:
+			fprintf(stderr, "Invalid selection. Please try again.\n");
+			break;
 		}
+		
 
 	} while (running);
 
 	SaveTaskstoDatabase(taskList);
 
-	DeleteList(taskList);
+	DeleteList(&taskList);
 }
 
 
 
-void printMOTD(PLISTNODE TaskList) {
+void PrintMOTD(PLISTNODE TaskList) {
 	fprintf(stdout,
 		"~~~ Welcome to the School Task Manager! ~~~\n"
 		"Here you can manage all of your upcoming school tasks.\n"
@@ -207,9 +221,9 @@ void printMOTD(PLISTNODE TaskList) {
 	}
 }
 
-void printMenu() {
+void PrintMenu() {
 	fprintf(stdout, 
-		"Please select an option:\n"
+		"\n\nPlease select an option:\n"
 		"A - Add a new task\n"
 		"B - Remove a task\n"
 		"C - Update a task\n"
@@ -218,6 +232,6 @@ void printMenu() {
 		"F - Display next due task\n"
 		"G - Remove past-due tasks\n"
 		"H - Quit School Task Manager\n"
-		"\nYour Selection:"
+		"\nYour Selection: "
 	);
 }
