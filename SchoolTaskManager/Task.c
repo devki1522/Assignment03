@@ -2,6 +2,7 @@
 // Implementation of the Task struct and functions
 
 #define _CRT_SECURE_NO_WARNINGS
+#define BUFFER_SIZE 100
 #include "task.h"
 #include "date.h"
 #include <stdio.h>
@@ -87,14 +88,14 @@ bool SetTaskDueDate(PTASK Task, DATE DueDate) {
 // Input from user
 
 void GetTaskNameFromUser(char* TaskName) {
-	char buffer[MAX_NAME_LEN];
+	char buffer[BUFFER_SIZE];
 	do {
 		fprintf(stdout, "Input a task name: ");
-		fgets(buffer, MAX_NAME_LEN, stdin);
+		fgets(buffer, BUFFER_SIZE, stdin);
 
 		for (int i = 0; i < MAX_NAME_LEN; i++) //Remove newline characters
 			if (buffer[i] == '\n')
-				buffer[i] = ' ';
+				buffer[i] = '\0';
 
 	} while (!IsTaskNameValid(buffer));
 
@@ -104,14 +105,14 @@ void GetTaskNameFromUser(char* TaskName) {
 
 
 void GetCourseCodeFromUser(char* CourseCode) {
-   char buffer[COURSE_CODE_LEN];
+   char buffer[BUFFER_SIZE];
    do {
        fprintf(stdout, "Input a course code: ");
-       fgets(buffer, COURSE_CODE_LEN, stdin);
+       fgets(buffer, BUFFER_SIZE, stdin);
 
 	   for (int i = 0; i < COURSE_CODE_LEN; i++) //Remove newline characters
 		   if (buffer[i] == '\n')
-			   buffer[i] = ' ';
+			   buffer[i] = '\0';
 	   
    } while (!IsCourseCodeValid(buffer));
 
@@ -130,6 +131,7 @@ int GetWeightFromUser() {
 	do {
 		fprintf(stdout, "Input a percentage weight: ");
 		int returnVal = scanf("%d", &weight);
+		ClearStdin();
 
 		if (returnVal != 1) {
 			fprintf(stderr, "Bad input recieved. Try again.\n");
@@ -147,11 +149,19 @@ int GetWeightFromUser() {
 // Validations
 
 bool IsTaskNameValid(char* TaskName) {
+	if (strlen(TaskName) == 0) {
+		fprintf(stderr, "Invalid task name - should not be empty. Try again.\n");
+		return false;
+	}
+	if (strlen(TaskName) > MAX_NAME_LEN) {
+		fprintf(stderr, "Invalid task name - should be less than %d characters. Try again.\n", MAX_NAME_LEN);
+		return false;
+	}
 	return true; // All task names are valid for now
 }
 
 bool IsCourseCodeValid(char* CourseCode) {
-	if (strlen(CourseCode) != 9) {
+	if (strlen(CourseCode) != COURSE_CODE_LEN - 1) {
 		fprintf(stderr, "Invalid course code - should be 9 characters. Try again.\n");
 		return false;
 	}
