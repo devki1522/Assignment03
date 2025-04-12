@@ -36,8 +36,6 @@ while (1) {
 		break;  
 	}  
 
-	printf("Loaded task: %s\n", newNode->task.name);  
-
 	AddListNode(&list, newNode->task);
 }  
 
