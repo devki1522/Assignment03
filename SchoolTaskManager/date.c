@@ -55,9 +55,17 @@ DATE GetDateFromUser() {
 	do {
 		fprintf(stdout, "Input the due date [DD/MM/YYYY]: ");
 		int returnVal = scanf("%d/%d/%d", &day, &month, &year);
-
-		if (IsDateValid(CreateDate(day, month, year)))
+		DATE userDate = CreateDate(day, month, year);
+		DATE currentDate = GetCurrentDate();
+		if (IsDate1SoonerThanDate2(userDate, currentDate)) {
 			goodInput = true;
+		}
+
+
+		/*if (IsDateValid(CreateDate(day, month, year))) {
+			goodInput = true;
+		}*/
+			
 
 	} while (!goodInput);
 

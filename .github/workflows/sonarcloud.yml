@@ -1,0 +1,65 @@
+name: SonarQube Cloud
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-scan:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Sonar Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4
+        env:
+          SONAR_HOST_URL: https://sonarcloud.io
+
+      - name: Build with compiler capture
+        run: >-
+          build-wrapper-win-x86-64.exe --out-dir build_wrapper_output_directory
+          msbuild SchoolTaskManager.sln /t:Rebuild /p:Configuration=Release
+          /p:Platform=x64 /nodeReuse:false
+
+      - name: Install OpenCppCoverage
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP "OpenCppCoverageSetup.exe"
+          Invoke-WebRequest `
+            -Uri "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe" `
+            -OutFile $installer
+          Start-Process -FilePath $installer `
+            -ArgumentList "/SUPRESSMSGBOXES /NORESTART /VERYSILENT" `
+            -NoNewWindow -Wait
+
+      - name: Run application smoke test
+        shell: pwsh
+        run: ./tests/smoke-test.ps1 -ExecutablePath ./x64/Release/SchoolTaskManager.exe
+
+      - name: Generate C coverage report
+        shell: pwsh
+        run: |
+          "H" | & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" `
+            --sources="$PWD\SchoolTaskManager" `
+            --export_type=cobertura:coverage.xml `
+            -- .\x64\Release\SchoolTaskManager.exe
+
+      - name: Analyze on SonarQube Cloud
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+        with:
+          args: >
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
