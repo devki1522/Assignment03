@@ -6,7 +6,6 @@
 #include "taskList.h"
 #include <stdio.h>
 #include "Task.h"
-#include <stdlib.h>
 
 PLISTNODE LoadTasksfromDatabase() {  
 FILE* file = fopen("database.txt", "r");  
@@ -14,30 +13,26 @@ if (file == NULL) {
 	printf("Error opening file.\n");  
 	return NULL;  
 }  
-PLISTNODE list = NULL;  
-PLISTNODE newNode = NULL;  
+PLISTNODE list = NULL;
+TASK task = { 0 };
 
-while (1) {  
-	newNode = (PLISTNODE)malloc(sizeof(LISTNODE));  
-	if (newNode == NULL) {  
-		printf("Memory allocation failed.\n");  
-		break;  
-	}  
+while (1) {
+    // AddListNode allocates and owns the linked-list node.
+    if (fscanf(file, "%19[^\n]\n%9[^\n]\n%d\n%d/%d/%d\n",
+        task.name,
+        task.courseCode,
+        &task.weight,
+        &task.dueDate.day,
+        &task.dueDate.month,
+        &task.dueDate.year) != 6) {
+        break;
+    }
 
-	// Attempt to read a task from the file  
-	if (fscanf(file, "%20[^\n]\n%10[^\n]\n%d\n%d/%d/%d\n",
-		newNode->task.name,  
-		newNode->task.courseCode,  
-		&newNode->task.weight,  
-		&newNode->task.dueDate.day,  
-		&newNode->task.dueDate.month,  
-		&newNode->task.dueDate.year) != 6) {  
-		free(newNode);  
-		break;  
-	}  
-
-	AddListNode(&list, newNode->task);
-}  
+    if (!AddListNode(&list, task)) {
+        printf("Memory allocation failed.\n");
+        break;
+    }
+}
 
 fclose(file);  
 return list;  

@@ -18,7 +18,10 @@ DATE CreateDate(int day, int month, int year) {
 
 DATE GetCurrentDate() {
 	time_t t = time(NULL); // time(NULL) returns seconds since epoch 
-	struct tm tm = *localtime(&t); // Converts seconds into local time based on system timezone + stores in struct
+	struct tm tm;
+	if (t == (time_t)-1 || localtime_s(&tm, &t) != 0) {
+		return CreateDate(0, 0, 0);
+	}
 
 	DATE date = CreateDate( // Converts time.h struct into our own struct, for convenience 
 		tm.tm_mday, 

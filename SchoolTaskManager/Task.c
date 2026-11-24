@@ -35,12 +35,12 @@ void PrintTask(TASK Task){
 
 // GETTERS
 
-char* GetTaskName(TASK Task) {
-	return Task.name;
+const char* GetTaskName(const TASK* Task) {
+	return Task->name;
 }
 
-char* GetTaskCourseCode(TASK Task) {
-	return Task.courseCode;
+const char* GetTaskCourseCode(const TASK* Task) {
+	return Task->courseCode;
 }
 
 int GetTaskWeight(TASK Task) {

@@ -30,9 +30,9 @@ void PrintTask(TASK Task);
 
 // Getters
 
-char* GetTaskName(TASK Task);
+const char* GetTaskName(const TASK* Task);
 
-char* GetTaskCourseCode(TASK Task);
+const char* GetTaskCourseCode(const TASK* Task);
 
 int GetTaskWeight(TASK Task);
 
